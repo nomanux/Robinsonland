@@ -40,7 +40,6 @@ export default function Contact() {
           <div className="field"><input id="ph" type="tel" placeholder=" " /><label htmlFor="ph">Phone number</label></div>
           <div className="field"><textarea id="msg" rows={3} placeholder=" " /><label htmlFor="msg">Your message</label></div>
           <label className="consent"><input type="checkbox" required /> I agree to the processing of my personal data in line with the Privacy Notice.</label>
-          <div className="form-trust"><img src="/assets/npc-seal.png" alt="" /><span>Your details are handled under the Data Privacy Act. Robinsons Land is <b>NPC DPO/DPS registered</b>.</span></div>
           <div className="form-ok" style={sent ? { display: 'block' } : undefined}>Thank you. Our team will reach out within two working days.</div>
           <Btn as="button" type="submit" style={{ justifySelf: 'start' }}>Send enquiry</Btn>
         </form>

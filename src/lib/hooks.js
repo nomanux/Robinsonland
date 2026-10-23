@@ -26,13 +26,13 @@ export function useScrollFrame(handler) {
   }, []);
 }
 
-/* Add .in to every .rv element (and the footer wordmark) the first time it scrolls into view */
-export function useRevealOnView() {
+/* Add .in to every .rv element (and the footer wordmark) the first time it scrolls into view; rescans when `key` changes */
+export function useRevealOnView(key) {
   useEffect(() => {
     const io = new IntersectionObserver(entries => entries.forEach(e => {
       if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
     }), { threshold: .15 });
     document.querySelectorAll('.rv, .wordmark').forEach(el => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [key]);
 }

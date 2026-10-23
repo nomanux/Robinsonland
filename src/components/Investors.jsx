@@ -1,15 +1,14 @@
 import { useRef } from 'react';
-import { REPORT } from '../data.js';
+import { IR, REPORT } from '../data.js';
 import { prefersReducedMotion } from '../lib/hooks.js';
 import Btn from './Btn.jsx';
 import Counter from './Counter.jsx';
 
-const R = 42, C = 2 * Math.PI * R;
+const STATS = [['Gross revenue', REPORT.revenue], ['Total assets', REPORT.assets], ['Net income', REPORT.netIncome]];
 
-/* Annual Report: 3D report cover, summary with actions, key figures with net-margin ring, IR quick links */
+/* IR intro, then Annual Report: 3D report cover beside summary, key figures and actions; IR quick links */
 export default function Investors() {
   const book = useRef(null);
-  const margin = REPORT.netIncome / REPORT.revenue; // 0.278
 
   const tilt = e => {
     if (prefersReducedMotion()) return;
@@ -21,7 +20,23 @@ export default function Investors() {
   const reset = () => { book.current.style.removeProperty('--ry'); book.current.style.removeProperty('--rx'); };
 
   return (
-    <section className="report wrap" id="investors" aria-labelledby="report-title">
+    <section className="report wrap" id="investors" aria-labelledby="ir-title">
+      <header className="ir-head">
+        <div>
+          <span className="eyebrow rv">Investor Relations</span>
+          <h2 id="ir-title" className="rv rv-d1">Clear lines to<br />our <em className="serif">investors.</em></h2>
+        </div>
+        <div className="ir-intro rv rv-d2">
+          <p>{IR.lead}</p>
+          <ol className="ir-principles">
+            {IR.principles.map(([title, text], i) => (
+              <li key={title}><small>{String(i + 1).padStart(2, '0')}</small><div><b>{title}</b>{text}</div></li>
+            ))}
+          </ol>
+          <a className="ir-more" href={IR.link} target="_blank" rel="noopener">Learn more about Investor Relations<span aria-hidden="true">→</span></a>
+        </div>
+      </header>
+
       <div className="report-panel rv">
         <div className="report-cover" onMouseMove={tilt} onMouseLeave={reset}>
           <a className="book" ref={book} href={REPORT.pdf} target="_blank" rel="noopener" aria-label="Open the 2024 Annual Report (PDF)">
@@ -39,39 +54,19 @@ export default function Investors() {
 
         <div className="report-body">
           <span className="eyebrow">Annual Report 2024</span>
-          <h2 id="report-title">Built on <em className="serif">transparent</em> growth.</h2>
+          <h3 id="report-title">Built on <em className="serif">transparent</em> growth.</h3>
           <p>{REPORT.summary}</p>
+          <dl className="report-stats">
+            {STATS.map(([label, value]) => (
+              <div key={label}><dt>{label}</dt><dd><Counter value={value} dec={2} money /></dd></div>
+            ))}
+          </dl>
           <div className="report-actions">
-            <Btn href={REPORT.pdf} target="_blank" rel="noopener" arrow="↗">View the 2024 Annual Report</Btn>
-            <a className="btn-outline" href={REPORT.all} target="_blank" rel="noopener">View all reports</a>
+            <Btn href={REPORT.pdf} target="_blank" rel="noopener" arrow="↗">Read the 2024 report</Btn>
+            <a className="report-link" href={REPORT.all} target="_blank" rel="noopener">All reports</a>
+            <a className="report-link" href={REPORT.dis} target="_blank" rel="noopener">DIS 2024 (PDF)</a>
           </div>
-          <a className="file-link" href={REPORT.dis} target="_blank" rel="noopener">
-            <span className="file-ico" aria-hidden="true">PDF</span>
-            <span><b>Download DIS 2024</b><small>Definitive Information Statement, SEC Form 20-IS</small></span>
-          </a>
         </div>
-
-        <aside className="report-kpis" aria-label="Key figures 2024">
-          <div className="kpi">
-            <span className="kpi-label">Gross revenue</span>
-            <Counter value={REPORT.revenue} dec={2} money />
-          </div>
-          <div className="kpi">
-            <span className="kpi-label">Total assets</span>
-            <Counter value={REPORT.assets} dec={2} money />
-          </div>
-          <div className="kpi">
-            <span className="kpi-label">Net income</span>
-            <Counter value={REPORT.netIncome} dec={2} money />
-          </div>
-          <div className="kpi-ring">
-            <svg viewBox="0 0 100 100" aria-hidden="true">
-              <circle cx="50" cy="50" r={R} className="track" />
-              <circle cx="50" cy="50" r={R} className="prog" style={{ strokeDasharray: C, '--off': C * (1 - margin), '--c': C }} />
-            </svg>
-            <div><b>{(margin * 100).toFixed(1)}%</b><span>Net income margin</span></div>
-          </div>
-        </aside>
       </div>
 
       <div className="ir-strip">
